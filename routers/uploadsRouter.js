@@ -1,8 +1,8 @@
 import express from "express";
-import { getPhotos } from "../controllers/photosController.js";
+import { getPhotos, setData } from "../controllers/photosController.js";
 
 const router = express.Router();
 
-router.route("/").get(getPhotos);
+router.route("/").get(getPhotos).post(setData);
 
 export default router;
