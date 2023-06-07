@@ -14,16 +14,20 @@ const redisClient = Redis.createClient({
 redisClient.connect().catch(console.error);
 
 export const getPhotos = async (req, res) => {
-  const albumId = req.query.albumId;
-  const { data } = await axios.get(
-    `https://jsonplaceholder.typicode.com/photos`,
-    {
-      params: {
-        albumId,
-      },
+  redisClient.get("photos", async (error, reply) => {
+    if (error) res.json({ status: "fail", error });
+    if (reply != null) {
+      const parseReply = JSON.parse(reply);
+      res.json({ src: "redis", photos: parseReply });
+    } else {
+      const { data } = await axios.get(
+        `https://jsonplaceholder.typicode.com/photos`
+      );
+      const photos = JSON.stringify(data);
+      await redisClient.set("photos", photos);
+      res.json({ src: "typicode", photos: data });
     }
-  );
-  res.json(data);
+  });
 };
 
 export const getPhotoById = async (req, res) => {

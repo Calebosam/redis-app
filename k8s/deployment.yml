@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-app
+  labels:
+    app: redis-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: redis-app
+    template:
+      metadata:
+        labels:
+          app: redis-app
+      spec:
+        containers:
+          - name: redis-app
+            image: caleb9083/redis-app
+            ports:
+              - containerPort: 80
+            livenessProbe:
+              httpGet:
+                path: /health
+                port: 8080
+              initialDelaySeconds: 3
+              periodSeconds: 3
