@@ -1,0 +1,19 @@
+version: '3.0'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: app
+    ports:
+      - "3000:3000"
+    restart: on-failure
+    environment:
+      - "REDIS_HOST:redis"
+      - "REDIS_PORT:6379"
+    networks:
+      - main
+   
+networks:
+  main:
+    external: true
